@@ -7,25 +7,35 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "Songs")
 public class Song implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JoinColumn(name = "id_song")
 	private Long id;
 	private String name;
 	private Double duration;
+	
+	@ManyToOne
+	@JoinColumn(name = "idalbum")
+	private Album album;
 
 	public Song() {
 		
 	}
 
-	public Song(Long id, String name, Double duration) {
+	public Song(Long id, String name, Double duration, Album album) {
 		this.id = id;
 		this.name = name;
 		this.duration = duration;
+		this.album = album;
 	}
 
 	public Long getId() {
