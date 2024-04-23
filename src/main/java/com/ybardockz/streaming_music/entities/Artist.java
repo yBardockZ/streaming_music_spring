@@ -26,7 +26,6 @@ public class Artist {
 	
 
 	public Artist() {
-		
 	}
 	
 	public Artist(String name, String bio) {

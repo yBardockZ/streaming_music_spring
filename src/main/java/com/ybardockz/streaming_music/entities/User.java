@@ -72,6 +72,10 @@ public class User implements Serializable {
 		this.password = password;
 	}
 	
+	public List<Playlist> getPlaylists() {
+		return playlists;
+	}
+
 	public Playlist createPlaylist(String name, List<Song> songs) {
 		Playlist playlist = new Playlist(name, songs, this);
 		playlists.add(playlist);
