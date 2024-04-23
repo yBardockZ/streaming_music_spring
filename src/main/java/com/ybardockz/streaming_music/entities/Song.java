@@ -1,18 +1,22 @@
 package com.ybardockz.streaming_music.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "Songs")
+@Table(name = "songs")
 public class Song implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
@@ -23,9 +27,12 @@ public class Song implements Serializable {
 	private String name;
 	private Double duration;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "idalbum")
 	private Album album;
+	
+	@ManyToMany(mappedBy = "songs")
+	private List<Playlist> playlists = new ArrayList<>();
 
 	public Song() {
 		
@@ -60,6 +67,26 @@ public class Song implements Serializable {
 
 	public void setDuration(Double duration) {
 		this.duration = duration;
+	}
+	
+	public Album getAlbum() {
+		return album;
+	}
+
+	public void setAlbum(Album album) {
+		this.album = album;
+	}
+
+	public List<Playlist> getPlaylists() {
+		return playlists;
+	}
+	
+	public void addPlaylist(Playlist playlist) {
+		playlists.add(playlist);
+	}
+	
+	public void removePlaylist(Playlist playlist) {
+		playlists.remove(playlist);
 	}
 
 	@Override

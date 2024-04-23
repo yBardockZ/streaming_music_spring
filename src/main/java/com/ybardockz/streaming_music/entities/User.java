@@ -1,17 +1,21 @@
 package com.ybardockz.streaming_music.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "Users")
+@Table(name = "users")
 public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
@@ -22,6 +26,9 @@ public class User implements Serializable {
 	private String username;
 	private String email;
 	private String password;
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<Playlist> playlists = new ArrayList<>();
 
 	public User() {
 	}
@@ -63,6 +70,13 @@ public class User implements Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	public Playlist createPlaylist(String name, List<Song> songs) {
+		Playlist playlist = new Playlist(name, songs, this);
+		playlists.add(playlist);
+		
+		return playlist;
 	}
 
 	@Override
