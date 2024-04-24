@@ -2,11 +2,14 @@ package com.ybardockz.streaming_music.services;
 
 import java.util.List;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.ybardockz.streaming_music.entities.Song;
 import com.ybardockz.streaming_music.repositories.SongRepository;
+import com.ybardockz.streaming_music.services.exceptions.DbException;
+import com.ybardockz.streaming_music.services.exceptions.ResourceNotFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -20,7 +23,7 @@ public class SongService {
 	}
 
 	public Song findById(Long id) {
-		return repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Song not found"));
+		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
 	public List<Song> findAll() {
@@ -33,7 +36,15 @@ public class SongService {
 	}
 
 	public void delete(Long id) {
-		repository.deleteById(id);
+		try {
+			if (!repository.existsById(id)) {
+				throw new ResourceNotFoundException(id);
+			}
+			repository.deleteById(id);
+		} catch (DataIntegrityViolationException e) {
+			throw new DbException(e.getMessage());
+		}
+		
 	}
 
 	public void update(Song song, Long id) {
@@ -44,8 +55,7 @@ public class SongService {
 
 			repository.save(songExisting);
 		} catch (EntityNotFoundException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
+			throw new ResourceNotFoundException(id);
 		}
 
 	}
